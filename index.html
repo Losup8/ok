@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <title>Speech to Text</title>
+</head>
+<body>
+  <h2>Speech to Text</h2>
+  <button id="startBtn">🎤 Spustiť počúvanie</button>
+  <button id="testBtn">🎤 ZKUSIT ROZPOZNÁVÁNÍ</button>
+  <button id="stopBtn" disabled>⏹ Zastaviť</button>
+  <p><strong>Počutý text:</strong></p>
+  <p id="output">...</p>
+
+<script>
+document.getElementById('testBtn').addEventListener('click', async () => {
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.lang = 'en-US';
+    rec.continuous = false;
+    rec.interimResults = false;
+
+    rec.onstart  = () => console.log('🎤 START');
+    rec.onend    = () => console.log('🏁 END');
+    rec.onresult = e => console.log('🎯 RESULT:', e.results[0][0].transcript);
+    rec.onerror  = e => console.warn('❌ ERROR:', e.error);
+
+    console.log('Startuji po kliku…');
+    rec.start();
+  } catch (err) {
+    console.error('🚫 Mic error:', err);
+  }
+});
+</script>
+</body>
+</html>
